@@ -1,1 +1,53 @@
-https://yahya4noshaily.github.io/Yahya-site
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>توصية لحظية EUR/USD</title>
+  <style>
+    body { font-family: Arial, sans-serif; direction: rtl; background: #ffffff; text-align: center; }
+    .box { background: #f8f8f8; border-radius: 10px; padding: 20px; display: inline-block; margin-top: 50px; }
+    .btn { margin-top: 15px; padding: 10px 20px; background: #007bff; color: #fff; border: none; border-radius: 5px; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h2>📊 توصية لحظية <span>EUR/USD</span></h2>
+    <p>💲 السعر: <span id="price">...</span></p>
+    <p>📉 التوصية: <span id="recommendation">...</span></p>
+    <p>⏱ مدة الصفقة المقترحة: دقيقة واحدة</p>
+    <p>🕒 الوقت الآن: <span id="time">--:--:--</span></p>
+    <button class="btn" onclick="fetchData()">🔄 تحديث يدوي</button>
+  </div>
+
+  <script>
+    const apiUrl = "https://api.exchangerate.host/latest?base=EUR&symbols=USD";
+
+    async function fetchData() {
+      try {
+        const response = await fetch(apiUrl);
+        const data = await response.json();
+        const rate = data.rates.USD;
+
+        document.getElementById("price").textContent = rate.toFixed(5);
+
+        // توصية بسيطة: بيع إذا السعر فوق 1، شراء إذا أقل
+        const recommendation = rate > 1 ? "بيع" : "شراء";
+        document.getElementById("recommendation").textContent = recommendation;
+
+        // عرض الوقت الحالي
+        const now = new Date();
+        const timeStr = now.toLocaleTimeString("ar-EG", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+        document.getElementById("time").textContent = timeStr;
+
+      } catch (error) {
+        document.getElementById("price").textContent = "خطأ في الاتصال";
+        document.getElementById("recommendation").textContent = "تعذر التحديث";
+        document.getElementById("time").textContent = "--:--:--";
+      }
+    }
+
+    // تشغيل التحديث عند فتح الصفحة
+    fetchData();
+  </script>
+</body>
+</html>
